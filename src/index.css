@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { direction: rtl; }
+body { background: #f8f6f1; font-family: 'Tajawal', sans-serif; color: #1e293b; }
+.quran-text { font-family: 'Amiri', serif; }
+.mushaf-page {
+  background: #fffdf7;
+  background-image: radial-gradient(#f1e9d6 1px, transparent 1px);
+  background-size: 24px 24px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 0 0 1px #f0e6c8 inset;
+  border-radius: 24px;
+}
+.quran-header {
+  background: linear-gradient(135deg, #0f5a43 0%, #1a7a5c 100%);
+  position: relative; overflow: hidden;
+}
+.surah-card { background: white; border: 1px solid #f1e9d6; transition: all 0.25s ease; }
+.surah-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(15,90,67,0.08); }
+
+/* وضع ليلي */
+.dark body { background: #0a0f1a!important; color: #e2e8f0; }
+.dark.surah-card { background: #162032; border-color: #1f2f4a; color: white; }
+.dark.mushaf-page { background: #162032; border-color: #1f2f4a; background-image: none; color: #e2e8f0; }
+.dark.quran-header { background: linear-gradient(135deg, #0a2a20 0%, #0f3d2e 100%); }
+.dark input { background: #162032!important; color: white!important; border-color: #1f2f4a!important; }
+.dark.bg-white { background: #162032!important; }
+.dark.text-gray-400 { color: #94a3b8!important; }

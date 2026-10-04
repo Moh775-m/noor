@@ -1,0 +1,70 @@
+import { useContext } from 'react'
+import { ThemeContext } from '../context/ThemeContext'
+
+const cards = [
+  { id:'quran', title:'المصحف الشريف', sub:'114 سورة', count:'114', icon:'📖', color:'from-[#0f5a43] to-[#1e7a60]' },
+  { id:'audio', title:'القرآن صوتاً', sub:'تلاوات خاشعة', count:'MP3', icon:'🎧', color:'from-[#1a6fb0] to-[#3aa0e0]' },
+  { id:'azkar', title:'أذكار المسلم', sub:'حصن المسلم', count:'حصن', icon:'📿', color:'from-[#8c6a1a] to-[#c9a227]' },
+  { id:'nawawi', title:'الأربعون النووية', sub:'42 حديثاً', count:'42', icon:'📚', color:'from-[#7a3b0e] to-[#c06a2a]' },
+  { id:'salah', title:'دليل الصلاة', sub:'فقه الصلاة', count:'فقه', icon:'🕌', color:'from-[#2a5a8a] to-[#4a90c0]' },
+  {
+    id:'asma',
+    title:'أسماء الله الحسنى',
+    sub:'99 اسماً',
+    count:'99',
+    icon:'الله', // ✅ أيقونة متناسقة بالخط العربي
+    color:'from-[#0f5a43] to-[#1a8a65]',
+    iconStyle: 'quran-text text-[18px] font-black' // خط خاص
+  },
+]
+
+export default function Home({ setActive }){
+  const { dark, toggleTheme } = useContext(ThemeContext)
+
+  return(
+    <div className={`min-h-screen pb-8 ${dark? 'bg-[#0a0f1a]' : 'bg-[#f8f6f1]'}`}>
+      <div className="px-5 pt-7 pb-2 flex justify-between items-start">
+        <div className="text-right">
+          <div className="flex items-center gap-2 justify-start" dir="ltr">
+            <div className="w-8 h-8 rounded-full bg-[#0f5a43] flex items-center justify-center text-white text-[13px] font-bold">ن</div>
+            <p className="text-[11px] tracking-[0.25em] text-[#8c7a4b] dark:text-[#a8a29a] font-medium">NOUR • نُور</p>
+          </div>
+          <h1 className="font-black text-[22px] mt-3 flex items-center gap-2 text-right" dir="rtl">
+            <span className="text-[20px]">🕌</span> هداية المسلم
+          </h1>
+          <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1 text-right">رفيقك اليومي للقرآن والأذكار</p>
+        </div>
+        <button onClick={toggleTheme} className="w-10 h-10 rounded-full bg-white dark:bg-[#1a2332] border border-[#f0e6c8] dark:border-white/10 flex items-center justify-center text-[16px] shadow-sm">
+          {dark? '☀️' : '🌙'}
+        </button>
+      </div>
+
+      <div className="px-5 mt-4">
+        <div className="bg-white dark:bg-[#1a2332] rounded-[16px] p-4 border border-[#f0e6c8]/60 dark:border-white/10 flex justify-between items-center">
+          <div className="text-right">
+            <p className="text-[10px] text-[#8c7a4b]">آية اليوم</p>
+            <p className="quran-text text-[13px] leading-6 mt-1 text-[#0d3b2e] dark:text-white">وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا</p>
+          </div>
+          <div className="w-8 h-8 rounded-full bg-[#f6f1df] dark:bg-white/10 flex items-center justify-center text-[12px]">💡</div>
+        </div>
+      </div>
+
+      <div className="px-3 mt-5 grid grid-cols-2 gap-3">
+        {cards.map(card=>(
+          <button key={card.id} onClick={()=>setActive(card.id)} className="rounded-[18px] p-4 text-right bg-white dark:bg-[#1a2332] border border-[#f0e6c8]/70 dark:border-white/10 h-[105px] flex flex-col justify-between">
+            <div className="flex justify-between items-start">
+              <div className={`w-10 h-10 rounded-[12px] bg-gradient-to-br ${card.color} flex items-center justify-center text-white ${card.iconStyle || 'text-[18px]'}`}>
+                {card.icon}
+              </div>
+              <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-[#f6f1df] dark:bg-white/10 text-[#8c7a4b]">{card.count}</span>
+            </div>
+            <div>
+              <p className="font-bold text-[13px] dark:text-white">{card.title}</p>
+              <p className="text-[10px] text-gray-400 mt-0.5">{card.sub}</p>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
