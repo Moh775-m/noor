@@ -5,17 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>نور المسلم - Nour</title>
     
-    <!-- PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f5a43">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="pwa-192x192.png">
-    
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+      .dev-footer {
+        text-align: center;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 11px;
+        color: #0f5a43;
+        opacity: 0.6;
+        padding: 20px 10px 10px;
+        letter-spacing: 0.3px;
+      }
+      .dev-footer span {
+        background: #f0faf6;
+        padding: 4px 10px;
+        border-radius: 20px;
+        border: 1px solid #d4efe6;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
+    
+    <!-- بصمتك كمطور -->
+    <div class="dev-footer">
+      <span>تم التطوير بكل حب لخدمة كتاب الله - المطور م. محسن © 2026</span>
+    </div>
+
     <script type="module" src="/src/main.jsx"></script>
+
+    <script>
+      window.sendRatingToEmail = async function(stars, text) {
+        try {
+          await fetch("https://formsubmit.co/ajax/mohsen77544.a@gmail.com", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Accept": "application/json" },
+            body: JSON.stringify({
+              _subject: "⭐ تقييم جديد " + stars + "/5 - نور المسلم",
+              "التقييم": stars + " / 5",
+              "الملاحظة": text || "بدون ملاحظة",
+              "التاريخ": new Date().toLocaleString('ar-YE')
+            })
+          });
+          return true;
+        } catch(e){ return false; }
+      }
+    </script>
   </body>
 </html>
