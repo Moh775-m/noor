@@ -8,15 +8,19 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      includeAssets: ['**/*'],
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,json}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,woff,woff2,ttf}'],
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/.*\.json$/,
+            urlPattern: /.*\.json$/,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'quran-cache',
-              expiration: { maxEntries: 200, maxAgeSeconds: 60 * 60 * 24 * 365 }
+              cacheName: 'quran-json-cache',
+              expiration: {
+                maxEntries: 300,
+                maxAgeSeconds: 60 * 60 * 24 * 365 // سنة كاملة
+              }
             }
           }
         ]
@@ -24,9 +28,14 @@ export default defineConfig({
       manifest: {
         name: 'نور المسلم',
         short_name: 'نور',
+        description: 'رفيقك اليومي للقرآن والأذكار',
         theme_color: '#0f5a43',
         background_color: '#062a22',
-        display: 'standalone'
+        display: 'standalone',
+        icons: [
+          { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' }
+        ]
       }
     })
   ]
