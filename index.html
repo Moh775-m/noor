@@ -4,74 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>نور المسلم - Nour</title>
-    
-    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f5a43">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="pwa-192x192.png">
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
-    
-    <style>
-      body { margin:0; background:#062a22; }
-      .dev-footer {
-        text-align: center;
-        font-family: 'Tajawal', sans-serif;
-        font-size: 11px;
-        color: #0f5a43;
-        opacity: 0.6;
-        padding: 20px 10px 10px;
-        letter-spacing: 0.3px;
-      }
-      .dev-footer span {
-        background: #f0faf6;
-        padding: 4px 10px;
-        border-radius: 20px;
-        border: 1px solid #d4efe6;
-      }
-    </style>
+    <style>body{margin:0;background:#062a22;}</style>
   </head>
   <body>
-    <div id="root">
-      <!-- Splash فوري يظهر أول شيء قبل تحميل React -->
-      <div style="position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(circle at 50% 15%, #1e8a6a 0%, #0f5a43 45%, #062a22 100%);">
-        <div style="position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:700px;height:700px;background:rgba(212,175,55,0.2);border-radius:50%;filter:blur(90px);"></div>
-        <div style="position:relative;display:flex;flex-direction:column;align-items:center;">
-          <div style="position:relative;width:140px;height:140px;border-radius:50%;background:linear-gradient(to bottom right, #0f5a43, #082e26);border:1px solid rgba(212,175,55,0.3);display:flex;align-items:center;justify-content:center;box-shadow:0 0 50px rgba(212,175,55,0.3);">
-            <span style="font-size:56px;font-weight:900;color:#fde68a;font-family:'Amiri', serif;text-shadow:0 0 15px rgba(253,230,138,0.8);">نور</span>
-          </div>
-          <h1 style="margin-top:32px;font-size:26px;font-weight:900;color:white;font-family:'Tajawal', sans-serif;letter-spacing:1px;">نور المسلم</h1>
-          <p style="margin-top:8px;font-size:11px;letter-spacing:0.3em;color:rgba(212,175,55,0.8);">NOUR AL-MUSLIM</p>
-          <p style="margin-top:24px;font-size:12px;color:rgba(255,255,255,0.6);font-family:'Amiri', serif;">﴿ اللَّهُ نُورُ السَّمَاوَاتِ وَالْأَرْضِ ﴾</p>
-          <div style="margin-top:40px;display:flex;gap:8px;">
-            <div style="width:8px;height:8px;border-radius:50%;background:#d4af37;"></div>
-            <div style="width:8px;height:8px;border-radius:50%;background:rgba(212,175,55,0.7);"></div>
-            <div style="width:8px;height:8px;border-radius:50%;background:rgba(212,175,55,0.4);"></div>
-          </div>
-        </div>
-        <div style="position:absolute;bottom:32px;font-size:10px;color:rgba(255,255,255,0.3);font-family:'Tajawal', sans-serif;"> © 2026</div>
-      </div>
-    </div>
-
+    <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-
-    <script>
-      // تم تحديثه للتوكن الآمن بدل الإيميل المباشر
-      window.sendRatingToEmail = async function(stars, text) {
-        try {
-          const res = await fetch("https://formsubmit.co/ajax/c52d05d5280889a1b3c7e732f9b2f8a9", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "Accept": "application/json" },
-            body: JSON.stringify({
-              _subject: "⭐ تقييم جديد " + stars + "/5 - نور المسلم",
-              "التقييم": stars + " / 5",
-              "الملاحظة": text || "بدون ملاحظة",
-              "التاريخ": new Date().toLocaleString('ar-YE')
-            })
-          });
-          return res.ok;
-        } catch(e){ return false; }
-      }
-    </script>
   </body>
 </html>

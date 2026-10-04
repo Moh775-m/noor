@@ -25,10 +25,12 @@ export default function Home({ setActive, onRate }){
     <div className={`min-h-screen pb-6 ${dark? 'bg-[#0a0f1a]' : 'bg-[#f8f6f1]'}`}>
       <div className="px-5 pt-7 pb-2 flex justify-between items-start">
         <div className="text-right">
-          <div className="flex items-center gap-2 justify-start" dir="ltr">
-            {/* شعار فقط بدون ضغط */}
+          <div className="flex items-center gap-2 justify-start">
             <div className="w-8 h-8 rounded-full bg-[#0f5a43] flex items-center justify-center text-white text-[13px] font-bold">ن</div>
-            <p className="text-[11px] tracking-[0.25em] text-[#8c7a4b]">NOUR • نُـور</p>
+            <p className="text-[11px] tracking-[0.25em] text-[#8c7a4b]">
+              <span dir="ltr">NOOR</span>
+              <span> • نور</span>
+            </p>
           </div>
           <h1 className="font-black text-[22px] mt-3 text-right" dir="rtl">نور المسلم</h1>
           <p className="text-[11px] text-gray-400 mt-1 text-right">رفيقك اليومي للقرآن والأذكار</p>
@@ -63,21 +65,19 @@ export default function Home({ setActive, onRate }){
         ))}
       </div>
 
-      {/* الفوتر الجديد - هو اللي يفتح تواصل معنا */}
       <div className="mt-8 px-5">
-        <div onClick={()=>setShowProfile(true)} className={`text-center py-4 rounded-[14px] border border-dashed cursor-pointer transition active:scale-[0.98] ${dark?'bg-white/[0.03] border-white/10 hover:bg-white/[0.06]':'bg-white border-black/5 hover:bg-[#f6f1df]'}`}>
-          <p className="text-[11px] text-gray-400">المطور م. محسن © 2026</p>
+        <div onClick={()=>setShowProfile(true)} className={`text-center py-4 rounded-[14px] border border-dashed cursor-pointer ${dark?'bg-white/[0.03] border-white/10':'bg-white border-black/5'}`}>
+          <p className="text-[11px] text-gray-400"> © 2026</p>
           <p className="text-[11px] font-bold text-[#0f5a43] dark:text-[#d4af37] mt-1">تواصل معنا - اضغط هنا</p>
         </div>
       </div>
 
       {showProfile && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-5" onClick={()=>setShowProfile(false)}>
-          <div className="bg-white dark:bg-[#1a2332] rounded-[20px] p-6 w-full max-w-[320px] shadow-2xl" onClick={e=>e.stopPropagation()} dir="rtl">
+          <div className="bg-white dark:bg-[#1a2332] rounded-[20px] p-6 w-full max-w-[320px]" onClick={e=>e.stopPropagation()} dir="rtl">
             <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-[#0f5a43] text-white flex items-center justify-center text-[22px] font-bold mx-auto shadow-lg">ن</div>
+              <div className="w-16 h-16 rounded-full bg-[#0f5a43] text-white flex items-center justify-center text-[22px] font-bold mx-auto">ن</div>
               <h3 className="font-black text-[16px] mt-3">تواصل معنا</h3>
-              <p className="text-[11px] text-gray-400 mt-1">تطبيق نُور المسلم</p>
               <div className="mt-5 space-y-3 text-right bg-[#f8f6f1] dark:bg-black/20 rounded-xl p-4">
                 <div className="flex justify-between"><span className="text-[11px] text-gray-400">الاسم</span><span className="text-[12px] font-bold">Mohsen Almashjari</span></div>
                 <div className="flex justify-between"><span className="text-[11px] text-gray-400">الجوال</span><span className="text-[12px] font-bold" dir="ltr">+967 775443254</span></div>

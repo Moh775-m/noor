@@ -8,22 +8,19 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['**/*'],
+      devOptions: {
+        enabled: false // في التطوير: اطفاء كامل، تشوف تعديلك لحظياً
+      },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,woff,woff2,ttf}'],
-        runtimeCaching: [
-          {
-            urlPattern: /.*\.json$/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'quran-json-cache',
-              expiration: {
-                maxEntries: 300,
-                maxAgeSeconds: 60 * 60 * 24 * 365 // سنة كاملة
-              }
-            }
-          }
-        ]
+        cleanupOutdatedCaches: true,
+        skipWaiting: true,
+        clientsClaim: true,
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        runtimeCaching: [{
+          urlPattern: /.*\.json$/,
+          handler: 'CacheFirst',
+          options: { cacheName: 'quran-json', expiration: { maxEntries: 300, maxAgeSeconds: 31536000 } }
+        }]
       },
       manifest: {
         name: 'نور المسلم',

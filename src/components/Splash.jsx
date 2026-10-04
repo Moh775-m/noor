@@ -32,7 +32,7 @@ export default function Splash(){
         <p className="mt-4 text-[10px] text-white/40">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
       </div>
 
-      <div className="absolute bottom-10 text-[10px] text-white/30">المطور م. محسن © 2026</div>
+      <div className="absolute bottom-10 text-[10px] text-white/30"> © 2026</div>
     </div>
   )
 }
