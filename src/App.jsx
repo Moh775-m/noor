@@ -13,24 +13,33 @@ import Maaloomat from './pages/Maaloomat'
 
 function InstallBanner(){
   const [deferredPrompt, setDeferredPrompt] = useState(null)
-  const [show, setShow] = useState(false)
+  const [show, setShow] = useState(true) // يظهر دائما
 
   useEffect(()=>{
     const handler = (e) => {
       e.preventDefault()
       setDeferredPrompt(e)
-      setShow(true)
     }
     window.addEventListener('beforeinstallprompt', handler)
+
+    // تحقق هل التطبيق مثبت حاليا
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setShow(false) // اخفيه لو هو مثبت حاليا كتطبيق
+    }
+
     return ()=> window.removeEventListener('beforeinstallprompt', handler)
   },[])
 
   const install = async () => {
-    if(!deferredPrompt) return
-    deferredPrompt.prompt()
-    const { outcome } = await deferredPrompt.userChoice
-    if(outcome === 'accepted') setShow(false)
-    setDeferredPrompt(null)
+    if(deferredPrompt){
+      deferredPrompt.prompt()
+      const { outcome } = await deferredPrompt.userChoice
+      if(outcome === 'accepted') setShow(false)
+      setDeferredPrompt(null)
+    } else {
+      // لو كروم ما جهز البرومبت، علم المستخدم كيف يثبت يدوي
+      alert("لتثبيت التطبيق:\nاضغط الثلاث نقاط فوق في كروم > تثبيت التطبيق أو Add to Home Screen")
+    }
   }
 
   if(!show) return null
