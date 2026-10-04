@@ -28,7 +28,7 @@ export default function Home({ setActive, onRate }){
           <div className="flex items-center gap-2 justify-start" dir="ltr">
             {/* شعار فقط بدون ضغط */}
             <div className="w-8 h-8 rounded-full bg-[#0f5a43] flex items-center justify-center text-white text-[13px] font-bold">ن</div>
-            <p className="text-[11px] tracking-[0.25em] text-[#8c7a4b]">NOUR • نُور</p>
+            <p className="text-[11px] tracking-[0.25em] text-[#8c7a4b]">NOUR • نُـور</p>
           </div>
           <h1 className="font-black text-[22px] mt-3 text-right" dir="rtl">نور المسلم</h1>
           <p className="text-[11px] text-gray-400 mt-1 text-right">رفيقك اليومي للقرآن والأذكار</p>
