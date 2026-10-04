@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  base: '/noor/',
   plugins: [
     react(),
     VitePWA({
@@ -15,11 +16,15 @@ export default defineConfig({
         theme_color: '#0f5a43',
         background_color: '#0f5a43',
         display: 'standalone',
-        start_url: '/',
+        start_url: '/noor/',
+        scope: '/noor/',
         icons: [
-          { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
+          { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
           { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
         ]
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg}']
       }
     })
   ]
