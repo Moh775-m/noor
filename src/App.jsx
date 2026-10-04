@@ -13,7 +13,7 @@ import Maaloomat from './pages/Maaloomat'
 
 function InstallBanner(){
   const [deferredPrompt, setDeferredPrompt] = useState(null)
-  const [show, setShow] = useState(true) // يظهر دائما
+  const [show, setShow] = useState(true)
 
   useEffect(()=>{
     const handler = (e) => {
@@ -22,9 +22,8 @@ function InstallBanner(){
     }
     window.addEventListener('beforeinstallprompt', handler)
 
-    // تحقق هل التطبيق مثبت حاليا
     if (window.matchMedia('(display-mode: standalone)').matches) {
-      setShow(false) // اخفيه لو هو مثبت حاليا كتطبيق
+      setShow(false)
     }
 
     return ()=> window.removeEventListener('beforeinstallprompt', handler)
@@ -37,7 +36,6 @@ function InstallBanner(){
       if(outcome === 'accepted') setShow(false)
       setDeferredPrompt(null)
     } else {
-      // لو كروم ما جهز البرومبت، علم المستخدم كيف يثبت يدوي
       alert("لتثبيت التطبيق:\nاضغط الثلاث نقاط فوق في كروم > تثبيت التطبيق أو Add to Home Screen")
     }
   }
@@ -61,32 +59,11 @@ function InstallBanner(){
   )
 }
 
-function Splash(){
-  return(
-    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
-      style={{background: 'radial-gradient(circle at 50% 30%, #1e8a6a 0%, #0f5a43 55%, #062a22 100%)'}}>
-      <div className="w-[140px] h-[140px] rounded-full bg-gradient-to-br from-[#0f3d2e] to-[#082e26] border border-[#d4af37]/20 flex items-center justify-center shadow-2xl">
-        <span className="text-[42px] font-black text-[#fde68a]" style={{fontFamily: 'Amiri, serif'}}>نور</span>
-      </div>
-      <h1 className="mt-8 text-[26px] font-black text-white tracking-wide">نور المسلم</h1>
-      <p className="mt-2 text-[11px] tracking-[0.3em] text-[#d4af37]/70">NOUR AL-MUSLIM</p>
-    </div>
-  )
-}
-
 function AppContent(){
   const [activePage, setActivePage] = useState('home')
   const [hideNav, setHideNav] = useState(false)
   const [showRate, setShowRate] = useState(false)
-  const [loading, setLoading] = useState(true)
   const { dark } = useContext(ThemeContext)
-
-  useEffect(()=>{
-    const t = setTimeout(()=> setLoading(false), 2500)
-    return ()=> clearTimeout(t)
-  },[])
-
-  if(loading) return <Splash />
 
   return(
     <div className={`min-h-screen max-w-[480px] mx-auto ${dark?'bg-[#0a0f1a] text-white':'bg-[#f8f6f1]'}`}>

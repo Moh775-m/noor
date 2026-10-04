@@ -26,8 +26,8 @@ export default defineConfig({
         name: 'نور المسلم',
         short_name: 'نور',
         description: 'رفيقك اليومي للقرآن والأذكار',
-        theme_color: '#0f5a43',
-        background_color: '#062a22',
+        background_color: '#0a3d2e',
+        theme_color: '#0a3d2e',
         display: 'standalone',
         icons: [
           { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
