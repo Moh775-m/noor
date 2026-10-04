@@ -14,47 +14,21 @@ import Maaloomat from './pages/Maaloomat'
 function InstallBanner(){
   const [deferredPrompt, setDeferredPrompt] = useState(null)
   const [show, setShow] = useState(true)
-
   useEffect(()=>{
-    const handler = (e) => {
-      e.preventDefault()
-      setDeferredPrompt(e)
-    }
+    const handler = (e) => { e.preventDefault(); setDeferredPrompt(e) }
     window.addEventListener('beforeinstallprompt', handler)
-
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      setShow(false)
-    }
-
+    if (window.matchMedia('(display-mode: standalone)').matches) setShow(false)
     return ()=> window.removeEventListener('beforeinstallprompt', handler)
   },[])
-
   const install = async () => {
-    if(deferredPrompt){
-      deferredPrompt.prompt()
-      const { outcome } = await deferredPrompt.userChoice
-      if(outcome === 'accepted') setShow(false)
-      setDeferredPrompt(null)
-    } else {
-      alert("لتثبيت التطبيق:\nاضغط الثلاث نقاط فوق في كروم > تثبيت التطبيق أو Add to Home Screen")
-    }
+    if(deferredPrompt){ deferredPrompt.prompt(); const {outcome}=await deferredPrompt.userChoice; if(outcome==='accepted') setShow(false); setDeferredPrompt(null) }
+    else alert("لتثبيت التطبيق: اضغط الثلاث نقاط فوق > تثبيت التطبيق")
   }
-
   if(!show) return null
-
   return(
     <div className="fixed bottom-4 left-4 right-4 z-[999] bg-white dark:bg-[#1a2332] rounded-[16px] p-4 shadow-2xl border flex items-center justify-between">
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-[#0f5a43] flex items-center justify-center text-white font-bold">ن</div>
-        <div className="text-right">
-          <p className="font-bold text-[13px]">حمل تطبيق نور المسلم</p>
-          <p className="text-[10px] text-gray-400">يثبت كتطبيق على جهازك</p>
-        </div>
-      </div>
-      <div className="flex gap-2">
-        <button onClick={()=>setShow(false)} className="text-[11px] px-3">لاحقاً</button>
-        <button onClick={install} className="bg-[#0f5a43] text-white px-4 py-2 rounded-xl text-[12px] font-bold">تثبيت</button>
-      </div>
+      <div className="flex items-center gap-3"><div className="w-10 h-10 rounded-full bg-[#0f5a43] flex items-center justify-center text-white font-bold">ن</div><div><p className="font-bold text-[13px]">حمل تطبيق نور المسلم</p><p className="text-[10px] text-gray-400">يثبت كتطبيق على جهازك</p></div></div>
+      <div className="flex gap-2"><button onClick={()=>setShow(false)} className="text-[11px] px-3">لاحقاً</button><button onClick={install} className="bg-[#0f5a43] text-white px-4 py-2 rounded-xl text-[12px] font-bold">تثبيت</button></div>
     </div>
   )
 }
@@ -62,12 +36,11 @@ function InstallBanner(){
 function AppContent(){
   const [activePage, setActivePage] = useState('home')
   const [hideNav, setHideNav] = useState(false)
-  const [showRate, setShowRate] = useState(false)
   const { dark } = useContext(ThemeContext)
 
   return(
     <div className={`min-h-screen max-w-[480px] mx-auto ${dark?'bg-[#0a0f1a] text-white':'bg-[#f8f6f1]'}`}>
-      {activePage==='home' && <Home setActive={setActivePage} onRate={()=>setShowRate(true)} />}
+      {activePage==='home' && <Home setActive={setActivePage} />}
       {activePage==='quran' && <Quran onReading={setHideNav} onHome={()=>{setHideNav(false); setActivePage('home')}} />}
       {activePage==='audio' && <Audio onHome={()=>setActivePage('home')} />}
       {activePage==='azkar' && <Azkar onHome={()=>setActivePage('home')} />}
@@ -77,7 +50,6 @@ function AppContent(){
       {activePage==='siyam' && <Siyam onHome={()=>setActivePage('home')} />}
       {activePage==='hajj' && <Hajj onHome={()=>setActivePage('home')} />}
       {activePage==='maaloomat' && <Maaloomat onHome={()=>setActivePage('home')} />}
-
       <InstallBanner />
     </div>
   )
