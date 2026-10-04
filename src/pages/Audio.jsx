@@ -1,4 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
+
+const AUDIO_CACHE = "noor-audio-v2";
+
 const reciters = [
     { id: 'alafasy', name: 'مشاري العفاسي', server: 'https://server8.mp3quran.net/afs/' },
     { id: 'husary', name: 'محمود الحصري', server: 'https://server13.mp3quran.net/husr/' },
@@ -13,15 +16,70 @@ export default function Audio({ onHome }) {
     const [currentId, setCurrentId] = useState(null)
     const [playing, setPlaying] = useState(false)
     const [search, setSearch] = useState('')
+    const [downloaded, setDownloaded] = useState({})
+    const [downloadingId, setDownloadingId] = useState(null)
     const audioRef = useRef(null)
+
     const list = allSurahs.filter(s => s.name.includes(search))
     const getUrl = (id) => `${reciter.server}${String(id).padStart(3, '0')}.mp3`
+
+    // تحميل قائمة المحفوظات عند فتح الصفحة
+    useEffect(() => {
+        const loadCache = async () => {
+            if (!('caches' in window)) return;
+            const cache = await caches.open(AUDIO_CACHE);
+            const keys = await cache.keys();
+            const map = {};
+            keys.forEach(req => map[req.url] = true);
+            setDownloaded(map);
+        };
+        loadCache();
+    }, []);
+
+    // إعادة فحص الكاش عند تغيير القارئ
+    useEffect(() => {
+        const loadCache = async () => {
+            if (!('caches' in window)) return;
+            const cache = await caches.open(AUDIO_CACHE);
+            const keys = await cache.keys();
+            const map = {};
+            keys.forEach(req => map[req.url] = true);
+            setDownloaded(map);
+        };
+        loadCache();
+    }, [reciter]);
+
     const handlePlay = (id) => {
         if (currentId === id) {
             if (playing) { audioRef.current.pause(); setPlaying(false) }
             else { audioRef.current.play(); setPlaying(true) }
         } else { setCurrentId(id) }
     }
+
+    const handleDownload = async (e, id) => {
+        e.stopPropagation(); // عشان ما يشغل السورة
+        const url = getUrl(id);
+        if (downloaded[url]) return;
+        setDownloadingId(id);
+        try {
+            const cache = await caches.open(AUDIO_CACHE);
+            // نستخدم fetch مع no-cors؟ لا، نحتاج cors
+            const res = await fetch(url, { mode: 'cors' });
+            if (!res.ok) throw new Error("fail");
+            await cache.put(url, res);
+            setDownloaded(prev => ({...prev, [url]: true }));
+        } catch (err) {
+            alert("فشل التحميل، تأكد من النت. بعض السيرفرات لا تسمح بالحفظ المباشر لكنها ستحفظ تلقائياً عند الاستماع.");
+            // حتى لو فشل الـ put اليدوي، الـ sw.js بيحفظها عند التشغيل
+        }
+        setDownloadingId(null);
+    }
+
+    const isCached = (id) => {
+        const url = getUrl(id);
+        return!!downloaded[url];
+    }
+
     useEffect(() => {
         if (currentId && audioRef.current) {
             audioRef.current.src = getUrl(currentId)
@@ -31,7 +89,6 @@ export default function Audio({ onHome }) {
 
     return (
         <div className="min-h-screen pb-28">
-            {/* هيدر صغير وثابت */}
             <div className="sticky top-0 z-40 bg-white/90 dark:bg-[#101a2c]/90 backdrop-blur-xl border-b border-[#f0e6c8] dark:border-white/10">
                 <div className="h-[56px] px-4 flex items-center justify-between">
                     <button onClick={onHome} className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#0f5a43] text-white text-[13px] font-bold shadow">
@@ -45,20 +102,48 @@ export default function Audio({ onHome }) {
                         <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">⌕</span>
                     </div>
                     <div className="flex gap-2 overflow-x-auto pb-1">
-                        {reciters.map(r => <button key={r.id} onClick={() => setReciter(r)} className={`whitespace-nowrap px-3 py-1.5 rounded-full text-[12px] font-bold border ${reciter.id === r.id ? 'bg-[#0f5a43] text-white border-[#0f5a43]' : 'bg-[#f8f6f1] dark:bg-white/10 text-[#8c7a4b] border-[#e9dfbd]'}`}>{r.name}</button>)}
+                        {reciters.map(r => <button key={r.id} onClick={() => setReciter(r)} className={`whitespace-nowrap px-3 py-1.5 rounded-full text-[12px] font-bold border ${reciter.id === r.id? 'bg-[#0f5a43] text-white border-[#0f5a43]' : 'bg-[#f8f6f1] dark:bg-white/10 text-[#8c7a4b] border-[#e9dfbd]'}`}>{r.name}</button>)}
                     </div>
+                    <p className="text-[11px] text-gray-500 px-1">💡 السورة التي تستمع لها تُحفظ تلقائياً للاستماع بدون نت</p>
                 </div>
             </div>
 
             <div className="px-3 pt-3 grid gap-2.5">
-                {list.map(s => <button key={s.id} onClick={() => handlePlay(s.id)} className={`surah-card rounded-[16px] p-3.5 flex items-center justify-between text-right ${currentId === s.id ? '!border-[#0f5a43]!bg-[#f0faf6]' : ''}`}><div className="flex items-center gap-3"><div className={`w-10 h-10 rounded-[10px] flex items-center justify-center font-bold text-[13px] border ${currentId === s.id ? 'bg-[#0f5a43] text-white' : 'bg-[#f6f1df] text-[#8c7a4b] border-[#e9dfbd]'}`}>{s.id}</div><p className="font-bold text-[15px]">{s.name}</p></div><div className={`w-9 h-9 rounded-full flex items-center justify-center ${currentId === s.id && playing ? 'bg-[#0f5a43] text-white' : 'bg-[#f8f6f1]'}`}>{currentId === s.id && playing ? '❚❚' : '▶'}</div></button>)}
+                {list.map(s => {
+                  const cached = isCached(s.id);
+                  const isDownloading = downloadingId === s.id;
+                  return (
+                    <div key={s.id} className={`surah-card rounded-[16px] p-3.5 flex items-center justify-between text-right ${currentId === s.id? '!border-[#0f5a43]!bg-[#f0faf6]' : ''}`}>
+                        <button onClick={() => handlePlay(s.id)} className="flex items-center gap-3 flex-1 text-right">
+                            <div className={`w-10 h-10 rounded-[10px] flex items-center justify-center font-bold text-[13px] border ${currentId === s.id? 'bg-[#0f5a43] text-white' : 'bg-[#f6f1df] text-[#8c7a4b] border-[#e9dfbd]'}`}>{s.id}</div>
+                            <div>
+                                <p className="font-bold text-[15px]">{s.name}</p>
+                                {cached && <p className="text-[11px] text-green-600">✅ محفوظة بدون نت</p>}
+                            </div>
+                        </button>
+
+                        <div className="flex items-center gap-2">
+                            {/* زر التحميل */}
+                            <button
+                                onClick={(e) => handleDownload(e, s.id)}
+                                className={`w-9 h-9 rounded-full flex items-center justify-center text-[14px] border ${cached? 'bg-green-50 border-green-200 text-green-600' : 'bg-[#f8f6f1] border-[#e9dfbd] text-[#8c7a4b]'}`}
+                                title={cached? "محفوظة" : "تحميل للاستماع بدون نت"}
+                            >
+                                {isDownloading? '⏳' : cached? '✓' : '⬇️'}
+                            </button>
+
+                            <button onClick={() => handlePlay(s.id)} className={`w-9 h-9 rounded-full flex items-center justify-center ${currentId === s.id && playing? 'bg-[#0f5a43] text-white' : 'bg-[#f8f6f1]'}`}>{currentId === s.id && playing? '❚❚' : '▶'}</button>
+                        </div>
+                    </div>
+                  )
+                })}
             </div>
 
             <audio ref={audioRef} onEnded={() => setPlaying(false)} onPause={() => setPlaying(false)} onPlay={() => setPlaying(true)} preload="none" />
             {currentId && (
                 <div className="fixed bottom-[70px] left-3 right-3 max-w-[480px] mx-auto bg-white dark:bg-[#162032] border border-[#e9dfbd] rounded-2xl p-3 shadow-2xl flex items-center gap-3 z-50">
-                    <button onClick={() => handlePlay(currentId)} className="w-11 h-11 rounded-full bg-[#0f5a43] text-white flex items-center justify-center font-bold">{playing ? '❚❚' : '▶'}</button>
-                    <div className="flex-1"><p className="text-sm font-bold">سورة {allSurahs.find(x => x.id === currentId)?.name}</p><p className="text-[11px] text-gray-400">{reciter.name} • {playing ? 'يعمل الآن' : 'متوقف'}</p></div>
+                    <button onClick={() => handlePlay(currentId)} className="w-11 h-11 rounded-full bg-[#0f5a43] text-white flex items-center justify-center font-bold">{playing? '❚❚' : '▶'}</button>
+                    <div className="flex-1"><p className="text-sm font-bold">سورة {allSurahs.find(x => x.id === currentId)?.name}</p><p className="text-[11px] text-gray-400">{reciter.name} • {playing? 'يعمل الآن' : 'متوقف'} {isCached(currentId)? '• ✅ بدون نت' : ''}</p></div>
                     <button onClick={() => { audioRef.current.pause(); setCurrentId(null); setPlaying(false) }} className="w-8 h-8 rounded-full bg-gray-100">✕</button>
                 </div>
             )}
