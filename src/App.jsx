@@ -13,44 +13,62 @@ function AppContent(){
   const [hideNav, setHideNav] = useState(false)
   const { dark } = useContext(ThemeContext)
 
-  // --- كود زر التثبيت ---
+  // --- كود زر التثبيت الذكي والدائم ---
   const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [showInstall, setShowInstall] = useState(false);
+  const [showInstall, setShowInstall] = useState(true);
+  const [isStandalone, setIsStandalone] = useState(false);
 
   useEffect(() => {
+    // هل التطبيق مثبت أصلاً؟ لا تظهر الزر
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+      setIsStandalone(true);
+      setShowInstall(false);
+    }
+
     const handler = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
       setShowInstall(true);
     };
     window.addEventListener('beforeinstallprompt', handler);
-    window.addEventListener('appinstalled', () => setShowInstall(false));
-    return () => window.removeEventListener('beforeinstallprompt', handler);
+    window.addEventListener('appinstalled', () => {
+      setShowInstall(false);
+      setIsStandalone(true);
+    });
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler);
+    };
   }, []);
 
   const handleInstall = async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') setShowInstall(false);
-    setDeferredPrompt(null);
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setShowInstall(false);
+      }
+      setDeferredPrompt(null);
+    } else {
+      // شرح يدوي إذا كروم منع الزر التلقائي (حالتك الآن)
+      alert("لتثبيت تطبيق نور المسلم على جوالك:\n\n1. اضغط ⋮ فوق في المتصفح\n2. اختر 'تثبيت التطبيق' أو 'Add to Home screen'\n3. اضغط تثبيت\n\nسيظهر عندك مثل أي تطبيق من المتجر!");
+    }
   };
   // --- نهاية كود التثبيت ---
 
   return(
     <div className={`min-h-screen max-w-[480px] mx-auto relative ${dark? 'bg-[#0a0f1a] text-white' : 'bg-[#f8f6f1] text-[#1e293b]'}`}>
 
-      {/* زر التحميل - يظهر فقط للناس اللي ما ثبتوا التطبيق */}
-      {showInstall &&!hideNav && (
-        <div className={`sticky top-0 z-[100] flex justify-between items-center px-4 py-3 mx-2 mt-2 rounded-xl shadow-lg ${dark? 'bg-[#1e293b] border border-white/10' : 'bg-[#0f5a43] text-white'}`}>
-          <span className="text-[14px] font-bold">📲 حمّل التطبيق على جوالك</span>
+      {/* زر التحميل - يظهر دائماً إلا إذا كان مثبت أو داخل قراءة القرآن */}
+      {showInstall &&!hideNav &&!isStandalone && (
+        <div className={`sticky top-0 z-[100] flex justify-between items-center px-4 py-3 mx-2 mt-2 rounded-xl shadow-lg animate-pulse ${dark? 'bg-[#1e293b] border border-white/10' : 'bg-[#0f5a43] text-white'}`}>
+          <span className="text-[13px] font-bold">📲 حمّل تطبيق نور المسلم</span>
           <div className="flex items-center gap-2">
-            <button onClick={() => setShowInstall(false)} className="opacity-70 px-1">✕</button>
+            <button onClick={() => setShowInstall(false)} className="opacity-70 px-2 text-[16px]">✕</button>
             <button
               onClick={handleInstall}
               className={`px-4 py-1.5 rounded-full font-bold text-sm ${dark? 'bg-white text-black' : 'bg-white text-[#0f5a43]'}`}
             >
-              تثبيت
+              {deferredPrompt? "تثبيت" : "تثبيت"}
             </button>
           </div>
         </div>
