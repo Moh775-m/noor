@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { ThemeContext } from '../context/ThemeContext'
 
 const cards = [
@@ -12,21 +12,32 @@ const cards = [
     title:'أسماء الله الحسنى',
     sub:'99 اسماً',
     count:'99',
-    icon:'الله', // ✅ أيقونة متناسقة بالخط العربي
+    icon:'الله',
     color:'from-[#0f5a43] to-[#1a8a65]',
-    iconStyle: 'quran-text text-[18px] font-black' // خط خاص
+    iconStyle: 'quran-text text-[18px] font-black'
   },
 ]
 
 export default function Home({ setActive }){
   const { dark, toggleTheme } = useContext(ThemeContext)
+  const [time, setTime] = useState(new Date())
+  const [showProfile, setShowProfile] = useState(false)
+
+  useEffect(() => {
+    const t = setInterval(() => setTime(new Date()), 1000)
+    return () => clearInterval(t)
+  }, [])
+
+  const dayName = time.toLocaleDateString('ar-SA', { weekday: 'long' })
+  const clock = time.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit', hour12: true })
 
   return(
     <div className={`min-h-screen pb-8 ${dark? 'bg-[#0a0f1a]' : 'bg-[#f8f6f1]'}`}>
       <div className="px-5 pt-7 pb-2 flex justify-between items-start">
         <div className="text-right">
           <div className="flex items-center gap-2 justify-start" dir="ltr">
-            <div className="w-8 h-8 rounded-full bg-[#0f5a43] flex items-center justify-center text-white text-[13px] font-bold">ن</div>
+            {/* التعديل 2: عند النقر على ن يفتح المربع */}
+            <button onClick={() => setShowProfile(true)} className="w-8 h-8 rounded-full bg-[#0f5a43] flex items-center justify-center text-white text-[13px] font-bold hover:scale-105 transition">ن</button>
             <p className="text-[11px] tracking-[0.25em] text-[#8c7a4b] dark:text-[#a8a29a] font-medium">NOUR • نُور</p>
           </div>
           <h1 className="font-black text-[22px] mt-3 flex items-center gap-2 text-right" dir="rtl">
@@ -34,9 +45,17 @@ export default function Home({ setActive }){
           </h1>
           <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1 text-right">رفيقك اليومي للقرآن والأذكار</p>
         </div>
-        <button onClick={toggleTheme} className="w-10 h-10 rounded-full bg-white dark:bg-[#1a2332] border border-[#f0e6c8] dark:border-white/10 flex items-center justify-center text-[16px] shadow-sm">
-          {dark? '☀️' : '🌙'}
-        </button>
+
+        {/* التعديل 1: الساعة واليوم تحت زر الوضع الليلي */}
+        <div className="flex flex-col items-center">
+          <button onClick={toggleTheme} className="w-10 h-10 rounded-full bg-white dark:bg-[#1a2332] border border-[#f0e6c8] dark:border-white/10 flex items-center justify-center text-[16px] shadow-sm">
+            {dark? '☀️' : '🌙'}
+          </button>
+          <div className="mt-2 text-center">
+            <p className="text-[11px] font-bold text-[#0f5a43] dark:text-white leading-none">{clock}</p>
+            <p className="text-[10px] text-[#8c7a4b] dark:text-gray-400 mt-1">{dayName}</p>
+          </div>
+        </div>
       </div>
 
       <div className="px-5 mt-4">
@@ -65,6 +84,36 @@ export default function Home({ setActive }){
           </button>
         ))}
       </div>
+
+      {/* مربع معلومات المطور */}
+      {showProfile && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-5" onClick={()=>setShowProfile(false)}>
+          <div className="bg-white dark:bg-[#1a2332] rounded-[20px] p-6 w-full max-w-[320px] shadow-2xl border border-[#f0e6c8] dark:border-white/10" onClick={e=>e.stopPropagation()} dir="rtl">
+            <div className="text-center">
+              <div className="w-16 h-16 rounded-full bg-[#0f5a43] text-white flex items-center justify-center text-[22px] font-bold mx-auto">ن</div>
+              <h3 className="font-black text-[16px] mt-3 dark:text-white">تواصل مع </h3>
+              <p className="text-[11px] text-gray-400 mt-1">مطور تطبيق نُور</p>
+
+              <div className="mt-5 space-y-3 text-right bg-[#f8f6f1] dark:bg-black/20 rounded-xl p-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-[11px] text-gray-400">الاسم</span>
+                  <span className="text-[12px] font-bold dark:text-white"> Mohsen Almashjari</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-[11px] text-gray-400">الجوال</span>
+                  <span className="text-[12px] font-bold dark:text-white" dir="ltr">+967 775443254</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-[11px] text-gray-400">البريد</span>
+                  <span className="text-[11px] font-bold dark:text-white">mohsen77544.a@gmail.com</span>
+                </div>
+              </div>
+
+              <button onClick={()=>setShowProfile(false)} className="mt-5 w-full h-11 rounded-xl bg-[#0f5a43] text-white text-[13px] font-bold">إغلاق</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
