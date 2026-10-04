@@ -63,13 +63,13 @@ function InstallBanner(){
 
 function Splash(){
   return(
-    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden"
-      style={{background: 'radial-gradient(circle at 50% 15%, #1e8a6a 0%, #0f5a43 45%, #062a22 100%)'}}>
-      <div className="relative w-[140px] h-[140px] rounded-full bg-gradient-to-br from-[#0f5a43] to-[#082e26] border border-[#d4af37]/30 flex items-center justify-center">
-        <span className="text-[56px] font-black text-[#fde68a]" style={{fontFamily: 'Amiri, serif'}}>نور</span>
+    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
+      style={{background: 'radial-gradient(circle at 50% 30%, #1e8a6a 0%, #0f5a43 55%, #062a22 100%)'}}>
+      <div className="w-[140px] h-[140px] rounded-full bg-gradient-to-br from-[#0f3d2e] to-[#082e26] border border-[#d4af37]/20 flex items-center justify-center shadow-2xl">
+        <span className="text-[42px] font-black text-[#fde68a]" style={{fontFamily: 'Amiri, serif'}}>نور</span>
       </div>
-      <h1 className="mt-8 text-[26px] font-black text-white">نور المسلم</h1>
-      <p className="mt-2 text-[11px] tracking-[0.3em] text-[#d4af37]/80">NOUR AL-MUSLIM</p>
+      <h1 className="mt-8 text-[26px] font-black text-white tracking-wide">نور المسلم</h1>
+      <p className="mt-2 text-[11px] tracking-[0.3em] text-[#d4af37]/70">NOUR AL-MUSLIM</p>
     </div>
   )
 }

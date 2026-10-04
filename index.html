@@ -3,13 +3,44 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>نور المسلم - Nour</title>
-    <meta name="theme-color" content="#0f5a43">
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
-    <style>body{margin:0;background:#062a22;}</style>
+    <meta name="theme-color" content="#0f5a43" />
+    <title>نور المسلم</title>
+    <style>
+      /* هذه هي اللي تطلع مباشرة قبل ما يحمل React */
+      #initial-splash {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at 50% 30%, #1e8a6a 0%, #0f5a43 55%, #062a22 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+      }
+      #initial-splash.logo {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0f3d2e 0%, #082e26 100%);
+        border: 1px solid rgba(212,175,55,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fde68a;
+        font-size: 42px;
+        font-weight: 900;
+        font-family: 'Amiri', serif;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="initial-splash">
+        <div class="logo">نور</div>
+        <h1 style="margin-top:32px; color:white; font-size:26px; font-weight:900;">نور المسلم</h1>
+        <p style="margin-top:8px; color:rgba(212,175,55,0.7); font-size:11px; letter-spacing:0.3em;">NOUR AL-MUSLIM</p>
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
