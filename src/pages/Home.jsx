@@ -41,7 +41,7 @@ export default function Home({ setActive }){
             <p className="text-[11px] tracking-[0.25em] text-[#8c7a4b] dark:text-[#a8a29a] font-medium">NOUR • نُور</p>
           </div>
           <h1 className="font-black text-[22px] mt-3 flex items-center gap-2 text-right" dir="rtl">
-            <span className="text-[20px]">🕌</span> هداية المسلم
+            <span className="text-[20px]"></span> نور المسلم
           </h1>
           <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1 text-right">رفيقك اليومي للقرآن والأذكار</p>
         </div>
