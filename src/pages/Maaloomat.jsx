@@ -153,7 +153,7 @@ export default function Maaloomat({ onHome }){
   return(
     <div className={`min-h-screen p-4 pb-20 ${dark?'bg-[#0a0f1a] text-white':'bg-[#f8f6f1]'}`}>
       <div className="flex items-center gap-3 mb-4 max-w-[480px] mx-auto">
-        <button onClick={onHome} className={`w-10 h-10 rounded-full flex items-center justify-center ${dark?'bg-white/10':'bg-white shadow'}`}>رجوع للرئسية</button>
+                <button onClick={onHome} className={`px-4 py-2 rounded-full text-sm font-bold ${dark?'bg-white/10':'bg-[#0a4d2e] text-white'}`}> رجوع للرئيسية</button>
         <h1 className="text-xl font-black">📚 موسوعة إسلامية</h1>
       </div>
 
