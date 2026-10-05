@@ -46,7 +46,7 @@ export default function Audio({ setActive }) {
     try { const c = await caches.open(AUDIO_CACHE); const keys = await c.keys(); const m={}; keys.forEach(k=>m[k.url]=true); setSaved(m) } catch {}
   }
 
-  // تشغيل فوري بدون انتظار
+  // تشغيل فوري للتطبيق
   const handlePlay = async (id) => {
     const url = getUrl(id)
     const audio = audioRef.current
@@ -60,46 +60,52 @@ export default function Audio({ setActive }) {
     setCurrentSurah(id)
     setIsPlaying(false)
 
-    // 1. شغل مباشر من النت فوراً
-    audio.src = url
-    audio.load()
-    audio.play().then(()=>setIsPlaying(true)).catch(()=>{})
-
-    // 2. في الخلفية اذا كانت محفوظة بدّل المصدر للكاش بدون ما يقطع (للمستقبل)
-    // واذا مش محفوظة احفظها تلقائيا
+    // 1. شغل مباشر فورا
     try {
       const cache = await caches.open(AUDIO_CACHE)
-      const match = await cache.match(url)
-      if (match) {
-        // هي محفوظة، المرة الجاية بتشغل من الكاش
-        return
+      const cached = await cache.match(url)
+      if (cached) {
+        // اذا محفوظة شغلها من الجوال
+        const blob = await cached.blob()
+        audio.src = URL.createObjectURL(blob)
       } else {
-        // مش محفوظة، احفظها تلقائيا بدون نت بعدين
-        const res = await fetch(url, { mode: 'cors' })
-        if(res.ok){
-          await cache.put(url, res.clone())
-          setSaved(s=>({...s, [url]:true}))
-        }
+        // اذا مش محفوظة شغلها من النت فورا
+        audio.src = url
       }
-    } catch {}
+      audio.load()
+      await audio.play()
+      setIsPlaying(true)
+    } catch {
+      audio.src = url
+      audio.play().then(()=>setIsPlaying(true))
+    }
+
+    // 2. احفظها في الخلفية بعد ثانية
+    if (!saved[url]) {
+      setTimeout(async () => {
+        try {
+          const res = await fetch(url)
+          if (res.ok) {
+            const c = await caches.open(AUDIO_CACHE)
+            await c.put(url, res.clone())
+            setSaved(s=>({...s, [url]:true}))
+          }
+        } catch {}
+      }, 1500)
+    }
   }
 
-  // تحميل فعلي
   const handleDownload = async (id) => {
     const url = getUrl(id)
     if (saved[url]) return
     setDownloading(id)
     try {
-      const res = await fetch(url, { mode: 'cors' })
-      if (!res.ok) throw new Error()
+      const res = await fetch(url)
       const cache = await caches.open(AUDIO_CACHE)
       await cache.put(url, res.clone())
       setSaved(s=>({...s, [url]:true}))
-    } catch (e) {
-      alert("فشل التحميل، جرب مرة ثانية")
-    } finally {
-      setDownloading(null)
-    }
+    } catch { alert("فشل التحميل") }
+    finally { setDownloading(null) }
   }
 
   const filtered = allSurahs.filter(s => s.name.includes(search))
@@ -107,7 +113,7 @@ export default function Audio({ setActive }) {
 
   return (
     <div className="min-h-screen bg-[#f8f6f1] pb-28" dir="rtl">
-      <audio ref={audioRef} preload="auto" />
+      <audio ref={audioRef} preload="none" playsInline />
 
       <div className="bg-[#0f5a43] text-white p-4 flex justify-between items-center sticky top-0 z-20">
         <h1 className="font-black text-[18px]">القرآن صوتاً</h1>
@@ -126,8 +132,6 @@ export default function Audio({ setActive }) {
           ))}
         </div>
 
-        <p className="text-[12px] text-gray-400 text-center mt-3">💡 السورة التي تستمع لها تُحفظ تلقائياً</p>
-
         <div className="mt-4 space-y-3">
           {filtered.map(s => {
             const isSaved =!!saved[getUrl(s.id)]
@@ -136,13 +140,11 @@ export default function Audio({ setActive }) {
             return (
               <div key={s.id} className={`bg-white rounded-2xl p-3 flex items-center justify-between shadow-sm border ${playing? 'border-[#0f5a43]' : 'border-transparent'}`}>
                 <div className="flex items-center gap-2">
-                  <button onClick={() => handlePlay(s.id)} className={`w-11 h-11 rounded-full flex items-center justify-center text-[16px] ${playing? 'bg-[#0f5a43] text-white' : 'bg-orange-50'}`}>{playing? '⏸️' : '▶️'}</button>
-                  <button onClick={() => handleDownload(s.id)} disabled={isDown} className="w-11 h-11 rounded-full bg-[#f8f6f1] flex items-center justify-center text-[16px]">
-                    {isDown? '⏳' : isSaved? '✅' : '⬇️'}
-                  </button>
+                  <button onClick={() => handlePlay(s.id)} className={`w-11 h-11 rounded-full flex items-center justify-center ${playing? 'bg-[#0f5a43] text-white' : 'bg-orange-50'}`}>{playing? '⏸️' : '▶️'}</button>
+                  <button onClick={() => handleDownload(s.id)} className="w-11 h-11 rounded-full bg-[#f8f6f1] flex items-center justify-center">{isDown? '⏳' : isSaved? '✅' : '⬇️'}</button>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="text-right"><p className="font-bold">{s.name}</p>{isSaved && <p className="text-[10px] text-green-600">محفوظة بدون نت</p>}</div>
+                  <div className="text-right"><p className="font-bold">{s.name}</p>{isSaved && <p className="text-[10px] text-green-600">بدون نت</p>}</div>
                   <div className="w-12 h-12 rounded-xl bg-[#f6f1df] text-[#8c7a4b] flex items-center justify-center font-bold">{s.id}</div>
                 </div>
               </div>
@@ -159,13 +161,13 @@ export default function Audio({ setActive }) {
               <button onClick={() => handlePlay(currentSurah)} className="w-12 h-12 rounded-full bg-[#0f5a43] text-white text-xl">{isPlaying? '⏸️' : '▶️'}</button>
               <button onClick={() => audioRef.current.currentTime += 10} className="w-9 h-9 rounded-full bg-gray-100">⏩</button>
             </div>
-            <div className="text-right flex-1 mr-4 overflow-hidden">
-              <p className="font-bold text-[14px] truncate">{currentName}</p>
+            <div className="text-right flex-1 mr-4">
+              <p className="font-bold text-[14px]">{currentName}</p>
               <p className="text-[11px] text-gray-400">{Math.floor(currentTime/60)}:{String(Math.floor(currentTime%60)).padStart(2,'0')} / {Math.floor(duration/60)}:{String(Math.floor(duration%60)).padStart(2,'0')}</p>
             </div>
             <div className="w-10 h-10 rounded-lg bg-[#f6f1df] flex items-center justify-center font-bold text-[#8c7a4b]">{currentSurah}</div>
           </div>
-          <input type="range" value={progress} onChange={e => { const t = (e.target.value/100)*duration; audioRef.current.currentTime = t }} className="w-full accent-[#0f5a43] h-1" />
+          <input type="range" value={progress} onChange={e => audioRef.current.currentTime = (e.target.value/100)*duration} className="w-full accent-[#0f5a43] h-1" />
         </div>
       )}
     </div>

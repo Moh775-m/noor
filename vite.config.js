@@ -36,21 +36,12 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        // لا تخلي الـ Workbox يكاش الصوت تلقائيا
         runtimeCaching: [
           {
-            // هذا هو الحل لمشكلة الصوت بدون نت
+            // أهم تعديل: شغل الصوت مباشر من النت، لا تنتظر الكاش
             urlPattern: /^https:\/\/.*\.mp3quran\.net\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'noor-audio-v2',
-              expiration: {
-                maxEntries: 200,
-                maxAgeSeconds: 60 * 60 * 24 * 365 // سنة كاملة
-              },
-              cacheableResponse: {
-                statuses: [0, 200]
-              }
-            }
+            handler: 'NetworkOnly',
           },
           {
             urlPattern: /^https:\/\/fonts\.(?:gstatic|googleapis)\.com\/.*/i,
@@ -58,6 +49,14 @@ export default defineConfig({
             options: {
               cacheName: 'google-fonts',
               expiration: { maxEntries: 20, maxAgeSeconds: 60*60*24*365 }
+            }
+          },
+          {
+            urlPattern: /^https:\/\/.*\.(?:png|jpg|jpeg|svg|gif)$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'images-cache',
+              expiration: { maxEntries: 100, maxAgeSeconds: 60*60*24*30 }
             }
           }
         ]
