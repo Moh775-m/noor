@@ -95,7 +95,7 @@ export default function Audio({ onHome, setActive }){
         <div className="flex items-center justify-between mb-4">
           <h1 className="font-bold text-[14px]">القرآن الكريم - 114 سورة</h1>
           <button onClick={handleBack} className="bg-[#1e1e1e] text-white px-4 py-1.5 rounded-full text-[12px] font-bold flex items-center gap-1">
-            <span>→</span> رجوع للرئيسية
+             رجوع للرئيسية
           </button>
         </div>
 

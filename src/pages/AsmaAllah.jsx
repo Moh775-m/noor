@@ -144,7 +144,7 @@ export default function AsmaAllah({ onHome }){
       {/* ✅ هيدر مصغر 48px */}
       <div className="sticky top-0 z-40 bg-[#fdf8ef]/95 dark:bg-[#0a0f1a]/95 backdrop-blur-xl border-b border-[#f0e6c8]">
         <div className="h-[48px] px-3 flex items-center justify-between">
-          <button onClick={onHome} className="px-3 py-1 rounded-full bg-[#0f5a43] text-white text-[11px] font-bold">→ رجوع</button>
+          <button onClick={onHome} className="px-3 py-1 rounded-full bg-[#0f5a43] text-white text-[11px] font-bold"> رجوع للرئسية</button>
           <p className="font-bold text-[13px]">أسماء الله الحسنى • 99</p>
           <div className="w-6"></div>
         </div>

@@ -356,7 +356,7 @@ export default function Nawawi({ onHome }){
     <div className="min-h-screen bg-[#fdf8ef] dark:bg-[#0a0f1a]">
       <div className="sticky top-0 z-40 bg-[#fdf8ef]/95 backdrop-blur-xl border-b border-[#f0e6c8]">
         <div className="h-[56px] px-4 flex items-center justify-between">
-          <button onClick={onHome} className="px-3.5 py-1.5 rounded-full bg-[#0f5a43] text-white text-[13px] font-bold">→ رجوع للرئيسية</button>
+          <button onClick={onHome} className="px-3.5 py-1.5 rounded-full bg-[#0f5a43] text-white text-[13px] font-bold"> رجوع للرئيسية</button>
           <p className="font-bold text-[14px]">الأربعين النووية • 42</p>
         </div>
       </div>

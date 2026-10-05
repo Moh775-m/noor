@@ -8,12 +8,11 @@ const cards = [
   { id:'nawawi', title:'الأربعون النووية', sub:'42 حديثاً', count:'42', icon:'📚', color:'from-[#7a3b0e] to-[#c06a2a]' },
   { id:'salah', title:'دليل الصلاة', sub:'فقه الصلاة', count:'فقه', icon:'🕌', color:'from-[#2a5a8a] to-[#4a90c0]' },
   { id:'asma', title:'أسماء الله الحسنى', sub:'99 اسماً', count:'99', icon:'الله', color:'from-[#0f5a43] to-[#1a8a65]', iconStyle: 'quran-text text-[18px] font-black' },
-  { id:'siyam', title:'أحكام الصيام', sub:'واجبات وسنن', count:'فقه', icon:'🌙', color:'from-[#5b4a1a] to-[#8c7a2b]' },
+  { id:'siyam', title:' الصيام', sub:'واجبات وسنن', count:'فقه', icon:'🌙', color:'from-[#5b4a1a] to-[#8c7a2b]' },
   { id:'hajj', title:'الحج والعمرة', sub:'مناسك وخطوات', count:'ركن', icon:'🕋', color:'from-[#111827] to-[#374151]' },
   { id:'maaloomat', title:'معلومات إسلامية', sub:'سيرة وغزوات', count:'موسوعة', icon:'📚', color:'from-[#064e3b] to-[#10b981]', big:true },
 ]
 
-// قائمة آيات اليوم - كل يوم واحدة مختلفة
 const ayaat = [
   { text: "وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا", ref: "الطلاق 2" },
   { text: "إِنَّ مَعَ الْعُسْرِ يُسْرًا", ref: "الشرح 6" },
@@ -24,12 +23,15 @@ const ayaat = [
   { text: "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ", ref: "البقرة 153" },
   { text: "لَا تَحْزَنْ إِنَّ اللَّهَ مَعَنَا", ref: "التوبة 40" },
   { text: "وَمَا كَانَ اللَّهُ لِيُعْجِزَهُ مِن شَيْءٍ", ref: "فاطر 44" },
-  { text: "وَاللَّهُ خَيْرٌ وَأَبْقَىٰ", ref: "طه 73" },
   { text: "وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰ", ref: "الضحى 5" },
-  { text: "وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ", ref: "الملك 1" },
-  { text: "إِنَّ اللَّهَ لَا يُضِيعُ أَجْرَ الْمُحْسِنِينَ", ref: "التوبة 120" },
-  { text: "وَقُل رَّبِّ زِدْنِي عِلْمًا", ref: "طه 114" },
-  { text: "فَاذْكُرُونِي أَذْكُرْكُمْ", ref: "البقرة 152" },
+]
+
+const adiyah = [
+  "اللهم إني أسألك علماً نافعاً ورزقاً طيباً وعملاً متقبلاً",
+  "اللهم يا مقلب القلوب ثبت قلبي على دينك",
+  "اللهم اغفر لي وارحمني واهدني وعافني وارزقني",
+  "ربنا آتنا في الدنيا حسنة وفي الآخرة حسنة وقنا عذاب النار",
+  "اللهم أعني على ذكرك وشكرك وحسن عبادتك",
 ]
 
 function getAyahOfDay() {
@@ -37,20 +39,37 @@ function getAyahOfDay() {
   const start = new Date(today.getFullYear(), 0, 0)
   const diff = today - start
   const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24))
-  // هذا يضمن كل يوم آية ثابتة وتتغير ثاني يوم
-  const index = dayOfYear % ayaat.length
-  return ayaat[index]
+  return ayaat[dayOfYear % ayaat.length]
+}
+function getDuaOfDay() {
+  const day = new Date().getDate()
+  return adiyah[day % adiyah.length]
 }
 
 export default function Home({ setActive, onRate }){
   const { dark, toggleTheme } = useContext(ThemeContext)
   const [time, setTime] = useState(new Date())
   const [showProfile, setShowProfile] = useState(false)
+  const [showCalendar, setShowCalendar] = useState(false)
   const [ayahOfDay] = useState(() => getAyahOfDay())
+  const [duaOfDay] = useState(() => getDuaOfDay())
 
   useEffect(()=>{ const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t)},[])
+
   const dayName = time.toLocaleDateString('ar-SA', { weekday: 'long' })
   const clock = time.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit', hour12: true })
+  const miladi = time.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+  let hijri = ""
+  try {
+    hijri = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(time)
+  } catch {
+    hijri = new Intl.DateTimeFormat('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' }).format(time)
+  }
+
+  const openWhatsApp = () => {
+    const msg = encodeURIComponent("السلام عليكم ورحمة الله وبركاته\nتطبيق نور المسلم رائع بارك الله فيكم 🌙")
+    window.open(`https://wa.me/967775443254?text=${msg}`, '_blank')
+  }
 
   return(
     <div className={`min-h-screen pb-6 ${dark? 'bg-[#0a0f1a]' : 'bg-[#f8f6f1]'}`}>
@@ -58,10 +77,7 @@ export default function Home({ setActive, onRate }){
         <div className="text-right">
           <div className="flex items-center gap-2 justify-start">
             <div className="w-8 h-8 rounded-full bg-[#0f5a43] flex items-center justify-center text-white text-[13px] font-bold">ن</div>
-            <p className="text-[11px] tracking-[0.25em] text-[#8c7a4b]">
-              <span dir="ltr">NOOR</span>
-              <span> • نور</span>
-            </p>
+            <p className="text-[11px] tracking-[0.25em] text-[#8c7a4b]"><span dir="ltr">NOOR</span><span> • نور</span></p>
           </div>
           <h1 className="font-black text-[22px] mt-3 text-right" dir="rtl">نور المسلم</h1>
           <p className="text-[11px] text-gray-400 mt-1 text-right">رفيقك اليومي للقرآن والأذكار</p>
@@ -69,6 +85,8 @@ export default function Home({ setActive, onRate }){
         <div className="flex flex-col items-center">
           <div className="flex items-center gap-2">
             <button onClick={onRate} className="w-10 h-10 rounded-full bg-yellow-400/20 border border-yellow-500/30 flex items-center justify-center text-[18px]">⭐</button>
+            {/* أيقونة التقويم الجديدة */}
+            <button onClick={()=>setShowCalendar(true)} className="w-10 h-10 rounded-full bg-white dark:bg-[#1a2332] border flex items-center justify-center text-[16px]">📅</button>
             <button onClick={toggleTheme} className="w-10 h-10 rounded-full bg-white dark:bg-[#1a2332] border flex items-center justify-center text-[16px]">{dark?'☀️':'🌙'}</button>
           </div>
           <div className="mt-2 text-center"><p className="text-[11px] font-bold text-[#0f5a43] dark:text-white">{clock}</p><p className="text-[10px] text-[#8c7a4b] mt-1">{dayName}</p></div>
@@ -100,12 +118,42 @@ export default function Home({ setActive, onRate }){
       </div>
 
       <div className="mt-8 px-5">
-        <div onClick={()=>setShowProfile(true)} className={`text-center py-4 rounded-[14px] border border-dashed cursor-pointer ${dark?'bg-white/[0.03] border-white/10':'bg-white border-black/5'}`}>
+        <div onClick={openWhatsApp} className={`text-center py-4 rounded-[14px] border border-dashed cursor-pointer ${dark?'bg-white/[0.03] border-white/10':'bg-white border-black/5'}`}>
           <p className="text-[11px] text-gray-400"> © 2026</p>
-          <p className="text-[11px] font-bold text-[#0f5a43] dark:text-[#d4af37] mt-1">تواصل معنا - اضغط هنا</p>
+          <p className="text-[11px] font-bold text-[#0f5a43] dark:text-[#d4af37] mt-1">تواصل معنا - اضغط هنا 💬</p>
         </div>
       </div>
 
+      {/* نافذة التقويم الجديدة */}
+      {showCalendar && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-5" onClick={()=>setShowCalendar(false)}>
+          <div className="bg-white dark:bg-[#1a2332] rounded-[24px] p-6 w-full max-w-[340px]" onClick={e=>e.stopPropagation()} dir="rtl">
+            <div className="text-center">
+              <div className="w-14 h-14 rounded-full bg-[#fef6e8] flex items-center justify-center text-[22px] mx-auto">📅</div>
+              <h3 className="font-black text-[18px] mt-3">التقويم اليوم</h3>
+              <p className="text-[12px] text-[#0f5a43] font-bold mt-1">{dayName}</p>
+
+              <div className="mt-5 space-y-3">
+                <div className="bg-[#f8f6f1] dark:bg-black/20 rounded-xl p-3 text-right">
+                  <p className="text-[10px] text-gray-400">التاريخ الميلادي</p>
+                  <p className="text-[13px] font-bold mt-1">{miladi}</p>
+                </div>
+                <div className="bg-[#f0faf5] dark:bg-[#0f5a43]/20 rounded-xl p-3 text-right border border-[#0f5a43]/10">
+                  <p className="text-[10px] text-[#0f5a43]">التاريخ الهجري</p>
+                  <p className="text-[13px] font-bold mt-1 text-[#0f5a43] dark:text-white">{hijri}</p>
+                </div>
+                <div className="bg-[#0a4d2e] rounded-xl p-4 text-center text-white">
+                  <p className="text-[10px] opacity-60">دعاء اليوم</p>
+                  <p className="text-[14px] mt-2 leading-7 font-medium">{duaOfDay}</p>
+                </div>
+              </div>
+              <button onClick={()=>setShowCalendar(false)} className="mt-5 w-full h-11 rounded-xl bg-[#0f5a43] text-white text-[13px] font-bold">إغلاق</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* نافذة البروفايل القديمة - تقدر تخليها عند الضغط على الشعار */}
       {showProfile && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-5" onClick={()=>setShowProfile(false)}>
           <div className="bg-white dark:bg-[#1a2332] rounded-[20px] p-6 w-full max-w-[320px]" onClick={e=>e.stopPropagation()} dir="rtl">
@@ -117,7 +165,8 @@ export default function Home({ setActive, onRate }){
                 <div className="flex justify-between"><span className="text-[11px] text-gray-400">الجوال</span><span className="text-[12px] font-bold" dir="ltr">+967 775443254</span></div>
                 <div className="flex justify-between"><span className="text-[11px] text-gray-400">البريد</span><span className="text-[11px] font-bold">mohsen77544.a@gmail.com</span></div>
               </div>
-              <button onClick={()=>setShowProfile(false)} className="mt-5 w-full h-11 rounded-xl bg-[#0f5a43] text-white text-[13px] font-bold">إغلاق</button>
+              <button onClick={openWhatsApp} className="mt-3 w-full h-11 rounded-xl bg-[#25D366] text-white text-[13px] font-bold flex items-center justify-center gap-2">💬 فتح واتساب</button>
+              <button onClick={()=>setShowProfile(false)} className="mt-2 w-full h-11 rounded-xl bg-[#f8f6f1] dark:bg-white/10 text-[13px] font-bold">إغلاق</button>
             </div>
           </div>
         </div>

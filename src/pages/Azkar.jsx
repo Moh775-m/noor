@@ -112,7 +112,7 @@ export default function Azkar({ onHome }){
     <div className="min-h-screen pb-20">
       <div className="sticky top-0 z-40 bg-white/90 dark:bg-[#101a2c]/90 backdrop-blur-xl border-b border-[#f0e6c8] dark:border-white/10">
         <div className="h-[56px] px-4 flex items-center justify-between">
-          <button onClick={onHome} className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#0f5a43] text-white text-[13px] font-bold shadow">→ رجوع للرئيسية</button>
+          <button onClick={onHome} className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#0f5a43] text-white text-[13px] font-bold shadow"> رجوع للرئيسية</button>
           <div className="text-left"><p className="font-bold text-[13px]">{activeCat}</p><p className="text-[10px] text-gray-400">{totalDone}/{totalTarget}</p></div>
         </div>
         <div className="px-3 pb-3 flex gap-2 overflow-x-auto">

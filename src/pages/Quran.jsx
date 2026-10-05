@@ -98,7 +98,7 @@ export default function Quran({ onReading, onHome }) {
             <div className="sticky top-0 z-40 bg-white/90 dark:bg-[#101a2c]/90 backdrop-blur-xl border-b">
                 <div className="h-[56px] px-4 flex items-center justify-between">
                     <button onClick={onHome} className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#0f5a43] text-white text-[13px] font-bold shadow">
-                        <span className="text-[14px]">→</span> رجوع للرئيسية
+                        رجوع للرئيسية
                     </button>
                     <p className="font-bold text-[14px]">القرآن الكريم • 114 سورة</p>
                 </div>

@@ -84,7 +84,7 @@ export default function Salah({ onHome }){
     <div className="min-h-screen bg-[#fdf8ef] dark:bg-[#0a0f1a] pb-20">
       <div className="sticky top-0 z-40 bg-[#fdf8ef]/95 dark:bg-[#0a0f1a]/95 backdrop-blur-xl border-b border-[#f0e6c8] dark:border-white/10">
         <div className="h-[56px] px-4 flex items-center justify-between">
-          <button onClick={onHome} className="px-3.5 py-1.5 rounded-full bg-[#0f5a43] text-white text-[13px] font-bold shadow">→ رجوع للرئيسية</button>
+          <button onClick={onHome} className="px-3.5 py-1.5 rounded-full bg-[#0f5a43] text-white text-[13px] font-bold shadow"> رجوع للرئيسية</button>
           <p className="font-bold text-[15px]">الصلاة 🕌</p>
         </div>
         <div className="px-3 pb-3 flex gap-2 overflow-x-auto scrollbar-hide">
