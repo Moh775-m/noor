@@ -20,7 +20,13 @@ export default function Audio({ onHome, setActive }){
   const [isPlaying, setIsPlaying] = useState(false)
   const [time, setTime] = useState(0)
   const [dur, setDur] = useState(0)
+  const [showNotice, setShowNotice] = useState(false)
   const audioRef = useRef(null)
+
+  useEffect(() => {
+    const seen = localStorage.getItem('audio_notice_seen')
+    if (!seen) setShowNotice(true)
+  }, [])
 
   useEffect(() => {
     const a = audioRef.current
@@ -37,6 +43,11 @@ export default function Audio({ onHome, setActive }){
       a.removeEventListener('ended', onEnd)
     }
   }, [])
+
+  const closeNotice = () => {
+    localStorage.setItem('audio_notice_seen', '1')
+    setShowNotice(false)
+  }
 
   const getUrl = (id) => `${reciter.server}${String(id).padStart(3, '0')}.mp3`
 
@@ -66,14 +77,24 @@ export default function Audio({ onHome, setActive }){
     <div className="min-h-screen bg-[#f8f6f1] pb-28" dir="rtl">
       <audio ref={audioRef} playsInline preload="none" />
 
-      {/* نفس زر الصورة بالضبط */}
+      {/* إشعار أول مرة */}
+      {showNotice && (
+        <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4">
+          <div className="bg-white rounded-[20px] p-5 max-w-[340px] w-full text-center shadow-xl">
+            <div className="w-12 h-12 bg-[#0f5a43]/10 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">📶</div>
+            <h3 className="font-black text-[15px] mb-2">تنبيه بسيط</h3>
+            <p className="text-[13px] leading-6 text-gray-600 mb-4">
+              الاستماع أول مرة يحتاج إنترنت، وبعد ما تشغل السورة أول مرة تشتغل معك مباشرة بدون تقطيع حتى لو النت ضعيف.
+            </p>
+            <button onClick={closeNotice} className="w-full bg-[#0f5a43] text-white py-3 rounded-full font-bold text-sm">فهمت، ابدأ الاستماع</button>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-[480px] mx-auto p-4">
         <div className="flex items-center justify-between mb-4">
           <h1 className="font-bold text-[14px]">القرآن الكريم - 114 سورة</h1>
-          <button
-            onClick={handleBack}
-            className="bg-[#1e1e1e] text-white px-4 py-1.5 rounded-full text-[12px] font-bold flex items-center gap-1"
-          >
+          <button onClick={handleBack} className="bg-[#1e1e1e] text-white px-4 py-1.5 rounded-full text-[12px] font-bold flex items-center gap-1">
             <span>→</span> رجوع للرئيسية
           </button>
         </div>
