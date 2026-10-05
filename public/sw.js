@@ -1,4 +1,4 @@
-const CACHE = "noor-v11";
+const CACHE = "noor-v12";
 const AUDIO_CACHE = "noor-audio-v2";
 
 self.addEventListener("install", (e) => {
