@@ -31,16 +31,24 @@ export default function Home({ setActive, onRate }){
   const [ramadanCount, setRamadanCount] = useState({ days: 0, hours: 0, mins: 0 })
 
   useEffect(()=>{ const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t)},[])
-  useEffect(() => {
+ useEffect(() => {
     async function fetchDate() {
+      const monthsAr = {
+        January: 'يناير', February: 'فبراير', March: 'مارس', April: 'أبريل',
+        May: 'مايو', June: 'يونيو', July: 'يوليو', August: 'أغسطس',
+        September: 'سبتمبر', October: 'أكتوبر', November: 'نوفمبر', December: 'ديسمبر'
+      }
       try {
         const res = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Mukalla&country=Yemen&method=4')
         const data = await res.json()
         if (data.code === 200) {
+          const g = data.data.date.gregorian
+          const h = data.data.date.hijri
+          const miladiMonth = monthsAr[g.month.en] || g.month.en
           setApiDates({
-            miladiText: `${data.data.date.gregorian.day} ${data.data.date.gregorian.month.ar} ${data.data.date.gregorian.year} م`,
-            hijriText: `${data.data.date.hijri.day} ${data.data.date.hijri.month.ar} ${data.data.date.hijri.year} هـ`,
-            weekday: data.data.date.hijri.weekday.ar
+            miladiText: `${g.day} ${miladiMonth} ${g.year} م`,
+            hijriText: `${h.day} ${h.month.ar} ${h.year} هـ`,
+            weekday: h.weekday.ar
           })
         }
       } catch {
