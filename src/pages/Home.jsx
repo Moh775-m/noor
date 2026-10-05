@@ -13,10 +13,41 @@ const cards = [
   { id:'maaloomat', title:'معلومات إسلامية', sub:'سيرة وغزوات', count:'موسوعة', icon:'📚', color:'from-[#064e3b] to-[#10b981]', big:true },
 ]
 
+// قائمة آيات اليوم - كل يوم واحدة مختلفة
+const ayaat = [
+  { text: "وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا", ref: "الطلاق 2" },
+  { text: "إِنَّ مَعَ الْعُسْرِ يُسْرًا", ref: "الشرح 6" },
+  { text: "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ", ref: "الرعد 28" },
+  { text: "فَإِنِّي قَرِيبٌ أُجِيبُ دَعْوَةَ الدَّاعِ", ref: "البقرة 186" },
+  { text: "وَرَحْمَتِي وَسِعَتْ كُلَّ شَيْءٍ", ref: "الأعراف 156" },
+  { text: "وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ", ref: "الطلاق 3" },
+  { text: "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ", ref: "البقرة 153" },
+  { text: "لَا تَحْزَنْ إِنَّ اللَّهَ مَعَنَا", ref: "التوبة 40" },
+  { text: "وَمَا كَانَ اللَّهُ لِيُعْجِزَهُ مِن شَيْءٍ", ref: "فاطر 44" },
+  { text: "وَاللَّهُ خَيْرٌ وَأَبْقَىٰ", ref: "طه 73" },
+  { text: "وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰ", ref: "الضحى 5" },
+  { text: "وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ", ref: "الملك 1" },
+  { text: "إِنَّ اللَّهَ لَا يُضِيعُ أَجْرَ الْمُحْسِنِينَ", ref: "التوبة 120" },
+  { text: "وَقُل رَّبِّ زِدْنِي عِلْمًا", ref: "طه 114" },
+  { text: "فَاذْكُرُونِي أَذْكُرْكُمْ", ref: "البقرة 152" },
+]
+
+function getAyahOfDay() {
+  const today = new Date()
+  const start = new Date(today.getFullYear(), 0, 0)
+  const diff = today - start
+  const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24))
+  // هذا يضمن كل يوم آية ثابتة وتتغير ثاني يوم
+  const index = dayOfYear % ayaat.length
+  return ayaat[index]
+}
+
 export default function Home({ setActive, onRate }){
   const { dark, toggleTheme } = useContext(ThemeContext)
   const [time, setTime] = useState(new Date())
   const [showProfile, setShowProfile] = useState(false)
+  const [ayahOfDay] = useState(() => getAyahOfDay())
+
   useEffect(()=>{ const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t)},[])
   const dayName = time.toLocaleDateString('ar-SA', { weekday: 'long' })
   const clock = time.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit', hour12: true })
@@ -46,8 +77,11 @@ export default function Home({ setActive, onRate }){
 
       <div className="px-5 mt-4">
         <div className="bg-white dark:bg-[#1a2332] rounded-[16px] p-4 border flex justify-between items-center">
-          <div className="text-right"><p className="text-[10px] text-[#8c7a4b]">آية اليوم</p><p className="quran-text text-[13px] mt-1">وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا</p></div>
-          <div className="w-8 h-8 rounded-full bg-[#f6f1df] flex items-center justify-center">💡</div>
+          <div className="text-right flex-1">
+            <p className="text-[10px] text-[#8c7a4b]">آية اليوم • {ayahOfDay.ref}</p>
+            <p className="quran-text text-[14px] mt-1 leading-7 font-bold">{ayahOfDay.text}</p>
+          </div>
+          <div className="w-8 h-8 rounded-full bg-[#f6f1df] flex items-center justify-center mr-3">💡</div>
         </div>
       </div>
 
