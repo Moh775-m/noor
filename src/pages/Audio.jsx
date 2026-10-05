@@ -65,20 +65,30 @@ export default function Audio({ onHome, setActive }){
   return (
     <div className="min-h-screen bg-[#f8f6f1] pb-28" dir="rtl">
       <audio ref={audioRef} playsInline preload="none" />
-      <div className="flex items-center gap-3 p-4 max-w-[480px] mx-auto">
-        <button onClick={handleBack} className="w-10 h-10 rounded-full flex items-center justify-center bg-white shadow">←</button>
-        <h1 className="text-xl font-black">القرآن صوتاً</h1>
-      </div>
-      <div className="p-4 max-w-[480px] mx-auto">
-        <div className="bg-white rounded-2xl px-4 py-3 flex gap-2 shadow-sm">
-          <span>🔍</span>
-          <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="ابحث عن سورة..." className="w-full outline-none bg-transparent" />
+
+      {/* نفس زر الصورة بالضبط */}
+      <div className="max-w-[480px] mx-auto p-4">
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="font-bold text-[14px]">القرآن الكريم - 114 سورة</h1>
+          <button
+            onClick={handleBack}
+            className="bg-[#1e1e1e] text-white px-4 py-1.5 rounded-full text-[12px] font-bold flex items-center gap-1"
+          >
+            <span>→</span> رجوع للرئيسية
+          </button>
         </div>
-        <div className="flex gap-2 overflow-x-auto mt-4 pb-2">
+
+        <div className="bg-white rounded-2xl px-4 py-3 flex gap-2 shadow-sm">
+          <span className="opacity-50">🔍</span>
+          <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="ابحث عن سورة..." className="w-full outline-none bg-transparent text-sm" />
+        </div>
+
+        <div className="flex gap-2 overflow-x-auto mt-4 pb-2 no-scrollbar">
           {reciters.map(r=>
             <button key={r.id} onClick={()=>setReciter(r)} className={`whitespace-nowrap px-5 py-2.5 rounded-full text-sm font-bold ${reciter.id===r.id?'bg-[#0f5a43] text-white':'bg-white border'}`}>{r.name}</button>
           )}
         </div>
+
         <div className="mt-4 space-y-3">
           {filtered.map(s=>{
             const playing = current===s.id && isPlaying
@@ -86,14 +96,15 @@ export default function Audio({ onHome, setActive }){
               <div key={s.id} className={`bg-white rounded-2xl p-3 flex justify-between items-center shadow-sm ${playing?'border border-[#0f5a43]':''}`}>
                 <button onClick={()=>play(s.id)} className={`w-11 h-11 rounded-full flex items-center justify-center ${playing?'bg-[#0f5a43] text-white':'bg-orange-100'}`}>{playing?'⏸️':'▶️'}</button>
                 <div className="flex items-center gap-3">
-                  <p className="font-bold">{s.name}</p>
-                  <div className="w-12 h-12 rounded-xl bg-[#f6f1df] text-[#8c7a4b] flex items-center justify-center font-bold">{s.id}</div>
+                  <p className="font-bold text-sm">{s.name}</p>
+                  <div className="w-10 h-10 rounded-xl bg-[#f6f1df] text-[#8c7a4b] flex items-center justify-center font-bold text-sm">{s.id}</div>
                 </div>
               </div>
             )
           })}
         </div>
       </div>
+
       {current && (
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-3 shadow-[0_-5px_20px_rgba(0,0,0,0.1)] z-40">
           <div className="max-w-[480px] mx-auto">
