@@ -118,7 +118,7 @@ export default function Home({ setActive, onRate }){
       setDistanceToKaaba(Math.round(R * c))
     }
     if(!navigator.geolocation){
-      setQiblaError('المتصفح لا يدعم تحديد الموقع')
+      setQiblaError('المتصفح لا يـدعم تحديد الموقع')
       return
     }
     navigator.geolocation.getCurrentPosition(pos=>{
